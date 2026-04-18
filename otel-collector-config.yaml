@@ -1,0 +1,51 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+processors:
+  attributes:
+      actions:
+        - key: service.name
+          action: insert
+          value: my-node-app
+
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 90
+    spike_limit_mib: 20
+
+  batch:
+    send_batch_max_size: 512
+    send_batch_size: 256
+    timeout: 10s
+
+exporters:
+  debug:
+    verbosity: detailed
+
+  otlp_http:
+    endpoint: http://tempo:4318
+
+  prometheus:
+    endpoint: "0.0.0.0:9464"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug, otlp_http]
+
+    metrics:
+      receivers: [otlp]
+      processors: [attributes, memory_limiter, batch]
+      exporters: [debug, prometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug]

@@ -1,0 +1,11 @@
+# Node
+app/node_modules/
+node_modules/
+app/logs/
+*.log
+
+# Docker volumes
+grafana-data/
+
+# OS
+.DS_Stor
