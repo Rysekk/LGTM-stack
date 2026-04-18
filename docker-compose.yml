@@ -12,15 +12,15 @@ services:
       - "8889:8889"
       - "9464:9464"
       - "13133:13133"
-      - "4317:4317"   # ✅ gRPC
-      - "4318:4318"   # ✅ HTTP
+      - "4317:4317"   # gRPC
+      - "4318:4318"   # HTTP
   grafana:
     image: grafana/grafana-enterprise
     container_name: grafana
     restart: unless-stopped
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin   # ✅ ajouter
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     volumes:
       - grafana-data:/var/lib/grafana
