@@ -142,8 +142,8 @@ histogram_quantile(0.95, rate(http_server_duration_milliseconds_bucket[5m]))
 
 ### Corrélation logs ↔ traces
 
-Les logs contiennent un `trace_id`. Dans Grafana :
-
+Les logs contiennent un `trace_id`.
+Dans Grafana :
 - Cliquer sur un log
 - Ouvrir la trace associée directement dans Tempo
 
