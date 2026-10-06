@@ -1,4 +1,4 @@
-# Stack d'Observabilité LGTM (Setup type production)
+# Stack d'Observabilité LGTM
 
 Ce projet est une stack complète d'observabilité basée sur l'écosystème **LGTM** :
 
