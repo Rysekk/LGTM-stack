@@ -1,14 +1,14 @@
-# Stack d'Observabilité LGTM
+# LGTM Observability Stack
 
-Ce projet est une stack complète d'observabilité basée sur l'écosystème **LGTM** :
+This project is a complete observability stack built on the **LGTM** ecosystem:
 
 - Logs → **Loki**
 - Traces → **Tempo**
-- Métriques → **Prometheus**
+- Metrics → **Prometheus**
 - Ingestion → **OpenTelemetry Collector** + **Grafana Alloy**
-- Visualisation → **Grafana**
+- Visualization → **Grafana**
 
-Il permet de mettre en place une chaîne complète d'observabilité avec **corrélation logs ↔ traces ↔ métriques**.
+It sets up a full observability pipeline with **logs ↔ traces ↔ metrics correlation**.
 
 ---
 
@@ -16,7 +16,7 @@ Il permet de mettre en place une chaîne complète d'observabilité avec **corr�
 
 ```text
 ┌────────────────────┐
-│   Application Node │
+│   Node Application │
 │ (OpenTelemetry SDK)│
 └─────────┬──────────┘
           │
@@ -30,7 +30,7 @@ Il permet de mettre en place une chaîne complète d'observabilité avec **corr�
         ▼     ▼
       Tempo   Prometheus
 
-Logs JSON
+JSON Logs
    ▼
 Grafana Alloy
    ▼
@@ -41,45 +41,44 @@ Grafana (UI)
 
 ---
 
-## Fonctionnalités
+## Features
 
-### Corrélation
+### Correlation
 
 - Logs ↔ Traces (via `trace_id`)
-- Traces ↔ Métriques (via `service.name`)
-- Logs ↔ Métriques (via labels)
+- Traces ↔ Metrics (via `service.name`)
+- Logs ↔ Metrics (via labels)
 
+### Auto-instrumented Node.js application
 
-### Application Node.js auto-instrumentée
+Application automatically instrumented with OpenTelemetry for Express and HTTP.
 
-Application instrumentée automatiquement avec OpenTelemetry pour Express et HTTP.
+### OpenTelemetry-native architecture
 
-### Architecture native OpenTelemetry
+Architecture built entirely on OpenTelemetry standards to correlate traces, metrics and logs.
 
-Architecture basée entièrement sur les standards OpenTelemetry pour la corrélation des traces, métriques et logs.
+### Ready for chaos / debugging scenarios
 
-### Prêt pour des scénarios de chaos / debug
-
-Conçu pour simuler des scénarios réels : latence, erreurs et pics de trafic afin de tester l'observabilité.
+Designed to simulate real-world scenarios — latency, errors and traffic spikes — to put the observability stack to the test.
 
 ---
 
-## Démarrage rapide
+## Quick Start
 
-### 1. Lancer la stack
+### 1. Start the stack
 
 ```bash
 docker compose up -d
 ```
 
-### 2. Lancer l'application Node.js
+### 2. Start the Node.js application
 
 ```bash
 cd app
 node app.js
 ```
 
-### 3. Générer du trafic
+### 3. Generate traffic
 
 ```bash
 curl http://localhost:3001/
@@ -91,7 +90,7 @@ for i in {1..20}; do curl -s http://localhost:3001/; done
 
 ---
 
-## Accès aux interfaces
+## Accessing the UIs
 
 | Service | URL |
 |---|---|
@@ -103,34 +102,34 @@ for i in {1..20}; do curl -s http://localhost:3001/; done
 
 ---
 
-## Exploration des données dans Grafana
+## Exploring Data in Grafana
 
 ### Traces (Tempo)
 
-1. Aller dans **Explore**
-2. Sélectionner **Tempo**
-3. Rechercher par `service.name = my-node-app`
-4. Cliquer sur une trace pour voir les spans
+1. Go to **Explore**
+2. Select **Tempo**
+3. Search by `service.name = my-node-app`
+4. Click a trace to view its spans
 
 ### Logs (Loki)
 
-1. Aller dans **Explore**
-2. Sélectionner **Loki**
-3. Requête :
+1. Go to **Explore**
+2. Select **Loki**
+3. Query:
 
 ```logql
 {app="my-node-app"}
 ```
 
-4. Parser JSON :
+4. Parse JSON:
 
 ```logql
 {app="my-node-app"} | json
 ```
 
-### Métriques (Prometheus)
+### Metrics (Prometheus)
 
-Exemples de requêtes :
+Example queries:
 
 ```promql
 rate(http_server_duration_milliseconds_count[1m])
@@ -140,51 +139,51 @@ rate(http_server_duration_milliseconds_count[1m])
 histogram_quantile(0.95, rate(http_server_duration_milliseconds_bucket[5m]))
 ```
 
-### Corrélation logs ↔ traces
+### Logs ↔ Traces correlation
 
-Les logs contiennent un `trace_id`.
+Logs include a `trace_id`.
 
-Dans Grafana :
-- Cliquer sur un log
-- Ouvrir la trace associée directement dans Tempo
+In Grafana:
+- Click a log line
+- Open the associated trace directly in Tempo
 
 ---
 
-## Stack technique
+## Tech Stack
 
-| Composant | Rôle |
+| Component | Role |
 |---|---|
-| [OpenTelemetry](https://opentelemetry.io/) | Standard d'instrumentation |
-| [Grafana](https://grafana.com/) | Visualisation |
-| [Loki](https://grafana.com/oss/loki/) | Stockage des logs |
-| [Tempo](https://grafana.com/oss/tempo/) | Stockage des traces |
-| [Prometheus](https://prometheus.io/) | Stockage des métriques |
-| [Grafana Alloy](https://grafana.com/docs/alloy/latest/) | Collecte et routage des logs |
-| [Node.js / Express](https://expressjs.com/) | Application instrumentée |
+| [OpenTelemetry](https://opentelemetry.io/) | Instrumentation standard |
+| [Grafana](https://grafana.com/) | Visualization |
+| [Loki](https://grafana.com/oss/loki/) | Log storage |
+| [Tempo](https://grafana.com/oss/tempo/) | Trace storage |
+| [Prometheus](https://prometheus.io/) | Metrics storage |
+| [Grafana Alloy](https://grafana.com/docs/alloy/latest/) | Log collection and routing |
+| [Node.js / Express](https://expressjs.com/) | Instrumented application |
 
 ---
 
-## Dépannage
+## Troubleshooting
 
-### Les traces ne remontent pas
+### Traces are not showing up
 
 ```bash
 docker logs otel-collector --tail 50
 ```
 
-### Les logs ne remontent pas
+### Logs are not showing up
 
 ```bash
 docker logs alloy --tail 50
 ```
 
-### Vérifier Loki
+### Check Loki
 
 ```bash
 curl http://localhost:3100/ready
 ```
 
-### Vérifier Prometheus
+### Check Prometheus
 
 ```bash
 curl http://localhost:9090/targets
@@ -192,11 +191,11 @@ curl http://localhost:9090/targets
 
 ---
 
-## Objectif du projet
+## Project Goals
 
-Ce projet a pour but de démontrer :
+This project aims to demonstrate:
 
-- La mise en place d'une stack d'observabilité complète
-- La corrélation entre logs, traces et métriques
-- L'instrumentation d'une application Node.js
-- Les bonnes pratiques OpenTelemetry
+- Setting up a complete observability stack
+- Correlating logs, traces and metrics
+- Instrumenting a Node.js application
+- OpenTelemetry best practices
